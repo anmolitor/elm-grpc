@@ -127,7 +127,7 @@ toCmd expect (InternalRpcRequest req) =
     Http.request
         { method = "POST"
         , headers = req.headers
-        , url = rpcToUrl req.rpc
+        , url = req.host ++ rpcToUrl req.rpc
         , body = body
         , timeout = req.timeout
         , expect = Http.expectBytesResponse expect (handleResponse rpc.decoder)
@@ -152,7 +152,7 @@ toTask (InternalRpcRequest req) =
     Http.task
         { method = "POST"
         , headers = req.headers
-        , url = rpcToUrl req.rpc
+        , url = req.host ++ rpcToUrl req.rpc
         , body = body
         , timeout = req.timeout
         , resolver = Http.bytesResolver (handleResponse rpc.decoder)
