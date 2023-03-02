@@ -1,16 +1,19 @@
 {
-  "type": "package",
-  "name": "andreasewering/elm-grpc",
-  "summary": "Send GRPC-Web requests with Elm.",
-  "license": "BSD-3-Clause",
-  "version": "1.0.0",
-  "exposed-modules": ["Grpc", "Grpc.Internal"],
-  "elm-version": "0.19.0 <= v < 0.20.0",
-  "dependencies": {
-    "elm/bytes": "1.0.8 <= v < 2.0.0",
-    "elm/core": "1.0.0 <= v < 2.0.0",
-    "elm/http": "2.0.0 <= v < 3.0.0",
-    "eriktim/elm-protocol-buffers": "1.2.0 <= v < 2.0.0"
-  },
-  "test-dependencies": {}
+    "type": "package",
+    "name": "andreasewering/elm-grpc",
+    "summary": "Send GRPC-Web requests with Elm.",
+    "license": "BSD-3-Clause",
+    "version": "1.0.1",
+    "exposed-modules": [
+        "Grpc",
+        "Grpc.Internal"
+    ],
+    "elm-version": "0.19.0 <= v < 0.20.0",
+    "dependencies": {
+        "elm/bytes": "1.0.8 <= v < 2.0.0",
+        "elm/core": "1.0.0 <= v < 2.0.0",
+        "elm/http": "2.0.0 <= v < 3.0.0",
+        "eriktim/elm-protocol-buffers": "1.2.0 <= v < 2.0.0"
+    },
+    "test-dependencies": {}
 }
