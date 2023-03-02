@@ -3,7 +3,7 @@
     "name": "andreasewering/elm-grpc",
     "summary": "Send GRPC-Web requests with Elm.",
     "license": "BSD-3-Clause",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "exposed-modules": [
         "Grpc",
         "Grpc.Internal"

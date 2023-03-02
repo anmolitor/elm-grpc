@@ -67,7 +67,7 @@ new rpc req =
     InternalRpcRequest
         { rpc = rpc
         , body = req
-        , headers = Dict.empty
+        , headers = [ header "accept" grpcContentType ]
         , host = ""
         , tracker = Nothing
         , timeout = Nothing
@@ -78,14 +78,14 @@ new rpc req =
 -}
 addHeader : String -> String -> InternalRpcRequest req res usesTracker -> InternalRpcRequest req res usesTracker
 addHeader key value (InternalRpcRequest req) =
-    InternalRpcRequest { req | headers = Dict.insert key value req.headers }
+    InternalRpcRequest { req | headers = header key value :: req.headers }
 
 
 {-| Add multiple headers at once to a request.
 -}
 addHeaders : List ( String, String ) -> InternalRpcRequest req res usesTracker -> InternalRpcRequest req res usesTracker
 addHeaders headers (InternalRpcRequest req) =
-    InternalRpcRequest { req | headers = List.foldl (\( k, v ) dict -> Dict.insert k v dict) req.headers headers }
+    InternalRpcRequest { req | headers = List.map (\( key, value ) -> header key value) headers ++ req.headers }
 
 
 {-| Set the host for the request. By default the host is empty (i.e. the current website), which is recommended to avoid CORS issues.
@@ -126,7 +126,7 @@ toCmd expect (InternalRpcRequest req) =
     in
     Http.request
         { method = "POST"
-        , headers = [ header "accept" grpcContentType ]
+        , headers = req.headers
         , url = rpcToUrl req.rpc
         , body = body
         , timeout = req.timeout
@@ -151,7 +151,7 @@ toTask (InternalRpcRequest req) =
     in
     Http.task
         { method = "POST"
-        , headers = [ header "accept" grpcContentType ]
+        , headers = req.headers
         , url = rpcToUrl req.rpc
         , body = body
         , timeout = req.timeout
@@ -244,7 +244,7 @@ type InternalRpcRequest req res usesTracker
     = InternalRpcRequest
         { rpc : Rpc req res
         , body : req
-        , headers : Dict String String
+        , headers : List Http.Header
         , host : String
         , tracker : Maybe String
         , timeout : Maybe Float
