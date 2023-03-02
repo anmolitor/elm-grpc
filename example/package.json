@@ -1,0 +1,15 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "description": "Example for gRPC in Elm",
+  "main": "index.js",
+  "scripts": {
+    "start": "vite"
+  },
+  "author": "Andreas Molitor",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "vite": "^3.2.5",
+    "vite-plugin-elm": "^2.7.2"
+  }
+}

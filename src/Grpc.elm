@@ -273,14 +273,21 @@ rpcToUrl (Grpc.Internal.Rpc { service, package, rpcName }) =
 handleResponse : Decoder res -> Http.Response Bytes -> Result Error res
 handleResponse decoder httpResponse =
     let
-        parseResponse : Http.Metadata -> Bytes -> Result Error res
-        parseResponse metadata bytes =
+        parseResponse : Bool -> Http.Metadata -> Bytes -> Result Error res
+        parseResponse isGoodStatus metadata bytes =
             let
+                defaultGrpcStatus =
+                    if isGoodStatus then
+                        Ok_
+
+                    else
+                        httpBadStatusToGrpcStatus metadata.statusCode
+
                 grpcStatus =
                     Dict.get "grpc-status" metadata.headers
                         |> Maybe.andThen String.toInt
                         |> Maybe.andThen errCodeFromInt
-                        |> Maybe.withDefault (httpToGrpcStatus metadata.statusCode)
+                        |> Maybe.withDefault defaultGrpcStatus
             in
             case grpcStatus of
                 Ok_ ->
@@ -298,7 +305,7 @@ handleResponse decoder httpResponse =
     in
     case httpResponse of
         GoodStatus_ metadata bytes ->
-            parseResponse metadata bytes
+            parseResponse True metadata bytes
 
         BadUrl_ badUrl ->
             Err <| BadUrl badUrl
@@ -310,13 +317,13 @@ handleResponse decoder httpResponse =
             Err NetworkError
 
         BadStatus_ metadata bytes ->
-            parseResponse metadata bytes
+            parseResponse False metadata bytes
 
 
 {-| Mapping is implemented according to <https://github.com/grpc/grpc/blob/master/doc/http-grpc-status-mapping.md>
 -}
-httpToGrpcStatus : Int -> GrpcStatus
-httpToGrpcStatus statusCode =
+httpBadStatusToGrpcStatus : Int -> GrpcStatus
+httpBadStatusToGrpcStatus statusCode =
     case statusCode of
         400 ->
             Internal
