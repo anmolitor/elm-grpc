@@ -3,6 +3,7 @@ module Grpc exposing
     , addHeader, addHeaders, setHost, setTimeout, setTracker
     , toTask, toCmd
     , Error(..), GrpcStatus(..)
+    , withRisk
     )
 
 {-| This is the public API for gRPC application usage. It is intended to be imported qualified.
@@ -71,6 +72,7 @@ new rpc req =
         , host = ""
         , tracker = Nothing
         , timeout = Nothing
+        , risky = False
         }
 
 
@@ -111,6 +113,13 @@ setTimeout timeoutInMs (InternalRpcRequest req) =
     InternalRpcRequest { req | timeout = Just timeoutInMs }
 
 
+{-| Make the request "risky" (i.e. "withCredentials=true" in javascript). This allows Set-Cookie to function in gRPC responses.
+-}
+withRisk : InternalRpcRequest req res usesTracker -> InternalRpcRequest req res usesTracker
+withRisk (InternalRpcRequest req) =
+    InternalRpcRequest { req | risky = True }
+
+
 {-| Convert the given `RpcRequest` into a Command to make the Elm runtime execute the request.
 -}
 toCmd : (Result Error res -> msg) -> InternalRpcRequest req res usesTracker -> Cmd msg
@@ -123,8 +132,15 @@ toCmd expect (InternalRpcRequest req) =
             encode (rpc.encoder req.body)
                 |> frameRequest
                 |> Http.bytesBody grpcContentType
+
+        toHttpRequest =
+            if req.risky then
+                Http.riskyRequest
+
+            else
+                Http.request
     in
-    Http.request
+    toHttpRequest
         { method = "POST"
         , headers = req.headers
         , url = req.host ++ rpcToUrl req.rpc
@@ -148,8 +164,15 @@ toTask (InternalRpcRequest req) =
             encode (rpc.encoder req.body)
                 |> frameRequest
                 |> Http.bytesBody grpcContentType
+
+        toHttpTask =
+            if req.risky then
+                Http.riskyTask
+
+            else
+                Http.task
     in
-    Http.task
+    toHttpTask
         { method = "POST"
         , headers = req.headers
         , url = req.host ++ rpcToUrl req.rpc
@@ -248,6 +271,7 @@ type InternalRpcRequest req res usesTracker
         , host : String
         , tracker : Maybe String
         , timeout : Maybe Float
+        , risky : Bool
         }
 
 
