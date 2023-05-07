@@ -1,9 +1,8 @@
 module Grpc exposing
     ( Rpc, RpcRequest, new
-    , addHeader, addHeaders, setHost, setTimeout, setTracker
+    , addHeader, addHeaders, setHost, setTimeout, setTracker, withRisk
     , toTask, toCmd
     , Error(..), GrpcStatus(..)
-    , withRisk
     )
 
 {-| This is the public API for gRPC application usage. It is intended to be imported qualified.
@@ -16,7 +15,7 @@ module Grpc exposing
 
 # Configuring the request
 
-@docs addHeader, addHeaders, setHost, setTimeout, setTracker
+@docs addHeader, addHeaders, setHost, setTimeout, setTracker, withRisk
 
 
 # Sending the request
@@ -200,10 +199,12 @@ Since the request is just a HTTP request under the hood, it may fail in the roug
 
   - `UnknownGrpcStatus` means you got a response back but the `grpc-status` header was set to either
 
-      - something that is not an `Int`
-      - an `Int` that is outside of the range of the `ErrCode` enum.
+```
+  - something that is not an `Int`
+  - an `Int` that is outside of the range of the `ErrCode` enum.
 
-    Note that not setting the header is fine and will delegate failure checking to the HTTP status.
+Note that not setting the header is fine and will delegate failure checking to the HTTP status.
+```
 
 -}
 type Error
