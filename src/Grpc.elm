@@ -32,7 +32,7 @@ module Grpc exposing
 import Bytes exposing (Bytes)
 import Bytes.Decode
 import Bytes.Encode
-import Dict exposing (Dict)
+import Dict
 import Grpc.Internal
 import Http exposing (Response(..), header)
 import Protobuf.Decode exposing (Decoder, decode)
