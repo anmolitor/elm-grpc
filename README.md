@@ -4,6 +4,8 @@ gRPC-Web Implementation for the Elm programming language.
 
 Designed for [protoc-gen-elm](https://github.com/andreasewering/protoc-gen-elm) code generation.
 
+** MOVED TO https://package.elm-lang.org/packages/anmolitor/elm-grpc/latest/ **
+
 Important note: Thanks to Martin Rosenberg for his [elm-grpc](https://package.elm-lang.org/packages/rosenbergm/elm-grpc/latest/) package which this package builds upon. I felt like I wanted a different API for protoc-gen-elm than what he currently has and wanted freedom to iterate quickly and show my API to other developers.
 We can merge the packages later!
 
